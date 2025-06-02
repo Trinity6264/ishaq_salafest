@@ -19,7 +19,7 @@ const BettingApp: React.FC = () => {
   const [selectedBets, setSelectedBets] = useState<Bet[]>([]);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
-  const [stakeAmount, setStakeAmount] = useState<number>(10);
+  const [stakeAmount, setStakeAmount] = useState<string>('1');
   const betSlipRef = useRef<HTMLDivElement>(null);
 
   const handleBetClick = (bet: Bet): void => {
@@ -190,7 +190,7 @@ const BettingApp: React.FC = () => {
   }, {});
 
   const totalOdds: number = selectedBets.reduce((acc, bet) => acc * parseFloat(bet.odds), 1);
-  const potentialWin: number = stakeAmount * totalOdds;
+  const potentialWin: number = Number(stakeAmount) * totalOdds;
 
   const Confetti: React.FC = () => {
     const pieces = Array.from({ length: 50 }, (_, i) => (
@@ -211,7 +211,11 @@ const BettingApp: React.FC = () => {
   };
 
   const handleStakeChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setStakeAmount(Number(e.target.value) || 0);
+     const value = e.target.value;
+  // Optional: only allow digits or decimals
+  if (/^\d*\.?\d*$/.test(value)) {
+    setStakeAmount(value);
+  }
   };
 
   return (
@@ -253,7 +257,7 @@ const BettingApp: React.FC = () => {
 
                 <div className="flex items-center justify-between mb-6">
                   <div className="text-center flex-1">
-                    <h2 className="text-xl font-bold mb-2">Rich Family</h2>
+                    <h2 className="text-xl font-bold mb-2 text-black">Rich Family</h2>
                     <div className="w-12 h-12 bg-yellow-500 rounded-full mx-auto"></div>
                   </div>
 
@@ -265,7 +269,7 @@ const BettingApp: React.FC = () => {
                   </div>
 
                   <div className="text-center flex-1">
-                    <h2 className="text-xl font-bold mb-2">Town FC</h2>
+                    <h2 className="text-xl font-bold mb-2 text-black">Town FC</h2>
                     <div className="w-12 h-12 bg-blue-500 rounded-full mx-auto"></div>
                   </div>
                 </div>
@@ -284,7 +288,7 @@ const BettingApp: React.FC = () => {
                       <div className="text-xs text-gray-600 mb-1">
                         {bet.type === 'win' ? (bet.label === 'Rich Family' ? '1' : '2') : 'X'}
                       </div>
-                      <div className="font-bold text-lg">{bet.odds}</div>
+                      <div className="font-bold text-lg text-gray-900">{bet.odds}</div>
                     </button>
                   ))}
                 </div>
@@ -309,7 +313,7 @@ const BettingApp: React.FC = () => {
                             }`}
                         >
                           <div className="text-xs text-gray-600 mb-1 truncate">{bet.label}</div>
-                          <div className="font-bold">{bet.odds}</div>
+                          <div className="font-semibold text-gray-500">{bet.odds}</div>
                         </button>
                       ))}
                     </div>
@@ -359,23 +363,27 @@ const BettingApp: React.FC = () => {
                           type="number"
                           value={stakeAmount}
                           onChange={handleStakeChange}
-                          className="flex-1 p-2 border-0 outline-none"
-                          min="1"
+                            style={{
+                              MozAppearance: 'textfield',
+                              WebkitAppearance: 'none',
+                              margin: 0
+                          }}
+                            className="no-spinner flex-1 p-2 border-0 outline-none text-gray-800"
                         />
                       </div>
                     </div>
 
                     <div className="text-sm space-y-1 mb-4">
                       <div className="flex justify-between">
-                        <span>Total Odds:</span>
-                        <span className="font-bold">{totalOdds.toFixed(2)}</span>
+                          <span className='text-gray-900'>Total Odds:</span>
+                          <span className="text-black ">{totalOdds.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Stake:</span>
-                        <span>GH₵{stakeAmount.toFixed(2)}</span>
+                          <span className='text-gray-900'>Stake:</span>
+                          <span className='text-black'>GH₵{Number(stakeAmount).toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between border-t pt-1">
-                        <span className="font-bold">Potential Win:</span>
+                          <span className="font-bold text-gray-900">Potential Win:</span>
                         <span className="font-bold text-green-600">GH₵{potentialWin.toFixed(2)}</span>
                       </div>
                     </div>
@@ -419,16 +427,16 @@ const BettingApp: React.FC = () => {
                 ))}
                 <div className="border-t-2 border-gray-300 mt-3 pt-3">
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Stake Amount:</span>
-                    <span className="font-medium">GH₵{stakeAmount.toFixed(2)}</span>
+                    <span className='text-gray-600'>Stake Amount:</span>
+                    <span className="font-medium text-black">GH₵ {Number(stakeAmount).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm mb-2">
-                    <span>Total Odds:</span>
-                    <span className="font-medium">{totalOdds.toFixed(2)}</span>
+                    <span className='text-gray-600'>Total Odds:</span>
+                    <span className="font-medium text-black">{totalOdds.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-lg">
-                    <span>Potential Win:</span>
-                    <span className="text-green-600">GH₵{potentialWin.toFixed(2)}</span>
+                    <span className='text-gray-600'>Potential Win:</span>
+                    <span className="text-green-600">GH₵ {potentialWin.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
